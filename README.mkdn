@@ -1,0 +1,22 @@
+# Rust RP2040 USB Device Example
+
+This is a worked example of implementing a USB device on the RP2040
+microcontroller, in Rust. It is designed to be easy to read, as a reference for
+how to get USB working.
+
+More details in the comment at the top of `src/main.rs`.
+
+## Running this code
+
+As of this writing (2022-04-08), you will need my fixed version of `elf2uf2-rs`
+to run this binary. This program is available from:
+
+https://github.com/cbiffle/elf2uf2-rs/tree/fix-range-check
+
+Checkout that code and run, in that directory,
+
+```
+cargo install --path .
+```
+
+Now, back in this directory, `cargo run --release` ought to work.
