@@ -2,6 +2,7 @@
 name = "rp2040-usb"
 version = "0.1.0"
 edition = "2021"
+license = "MPL-2.0"
 
 [features]
 default = ["target-pico"]
@@ -13,7 +14,6 @@ cortex-m = "0.7"
 cortex-m-rt = "0.6.13"
 rp2040-pac = {version = "0.3", features = ["rt"]}
 panic-halt = "0.2"
-rp2040-boot2 = "0.2"
 cfg-if = "1"
 zerocopy = "0.6"
 byteorder = {version = "1.4", default-features = false}

@@ -1,3 +1,7 @@
+// This Source Code Form is subject to the terms of the Mozilla Public
+// License, v. 2.0. If a copy of the MPL was not distributed with this
+// file, You can obtain one at https://mozilla.org/MPL/2.0/.
+
 //! Rust RP2040 USB Device Example.
 //!
 //! This is a working example of how to implement a USB device on RP2040 in
@@ -76,14 +80,23 @@ use panic_halt as _;
 // GPIO numbers of pins used here, other than USB. The firmware toggles these
 // pins to indicate activity, so that you can watch them on a logic analyzer to
 // understand the event flow.
-//
-// Note that if you're targeting a board other than the Pi Pico, you will
-// probably need to change these numbers.
-const LED_PIN: u8 = 25; // any activity
-const SETUP_PIN: u8 = 0; // SETUP request being handled
-const BUFF_PIN: u8 = 1; // activity on a buffer
-const RESET_PIN: u8 = 2; // bus reset!
-const EP_PIN: [u8;3] = [3, 4, 5]; // activity on EP0, 1, 2
+cfg_if::cfg_if! {
+    if #[cfg(feature = "target-pico")] {
+        const LED_PIN: u8 = 25; // any activity
+        const SETUP_PIN: u8 = 0; // SETUP request being handled
+        const BUFF_PIN: u8 = 1; // activity on a buffer
+        const RESET_PIN: u8 = 2; // bus reset!
+        const EP_PIN: [u8;3] = [3, 4, 5]; // activity on EP0, 1, 2
+    } else if #[cfg(feature = "target-feather")] {
+        const LED_PIN: u8 = 13; // any activity
+        const SETUP_PIN: u8 = 0; // SETUP request being handled
+        const BUFF_PIN: u8 = 1; // activity on a buffer
+        const RESET_PIN: u8 = 2; // bus reset!
+        const EP_PIN: [u8;3] = [3, 4, 5]; // activity on EP0, 1, 2
+    } else {
+        compile_error!("missing or unknown target-* feature");
+    }
+}
 
 // Note: USB type definitions and support functions are _after_ main. I've tried
 // to name them clearly, so that you should be able to read main without fully
@@ -1326,12 +1339,12 @@ cfg_if::cfg_if! {
         // requires a different bootloader, not totally sure why.
         #[link_section = ".boot_loader"]
         #[used]
-        static BOOT2: [u8; 256] = rp2040_boot2::BOOT_LOADER_GD25Q64CS;
+        static BOOT2: [u8; 256] = *include_bytes!("rustboot-gd25q64.bin");
     } else if #[cfg(feature = "target-pico")] {
         // The Pi Pico uses a Winbond W25Q080 chip.
         #[link_section = ".boot_loader"]
         #[used]
-        static BOOT2: [u8; 256] = rp2040_boot2::BOOT_LOADER_W25Q080;
+        static BOOT2: [u8; 256] = *include_bytes!("rustboot-w25q080.bin");
     } else {
         compiler_error!("must include one target-* feature");
     }

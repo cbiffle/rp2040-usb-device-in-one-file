@@ -20,3 +20,8 @@ cargo install --path .
 ```
 
 Now, back in this directory, `cargo run --release` ought to work.
+
+## License
+
+This code is licensed under the Mozilla Public License 2.0, [including the
+bootloader](https://github.com/cbiffle/rp2040-rustboot/).
